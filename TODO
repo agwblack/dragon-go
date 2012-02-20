@@ -1,0 +1,32 @@
+# TODO list
+#
+# Version control 
+#
+# Implement all common commands
+#
+# Parse output from commands
+#
+# Create a User class and prompt user for login details
+#
+# Abstract away from messages so main just looks like:
+#   login();
+#   listAllGames();
+#   checkForMoves();
+#   displayGame();
+# or something like that.
+#
+# Bring it to Android.
+#
+# Allow user to login, check status and set an option for 
+# periodic status check with notifcations
+#
+# Get to work on UI (so we can view games and make moves)
+#
+# Look at creating a widget
+#
+# Look to implement other features not present in anDGS, e.g.
+#   Viewing all available games
+#   Joining games
+#   Creating games
+#   Scoring at the end
+#   etc.
