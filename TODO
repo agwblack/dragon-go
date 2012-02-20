@@ -1,8 +1,16 @@
 # TODO list
 #
 # Implement all common commands
+#   DownloadGame
+#   Login
+#   Status
+#   QuickStatus
+#   QuickPlay
+# Need to get cookies working as part of this
 #
 # Parse output from commands
+#
+# Think about exceptions
 #
 # Create a User class and prompt user for login details
 #
