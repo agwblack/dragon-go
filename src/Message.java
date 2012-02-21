@@ -1,7 +1,13 @@
 
 class Message {
+  /* The HttpClient instance*/
   ApacheHttpClient client = new ApacheHttpClient();
+  
+  /* The Base address for the server */
   private String address = new String("http://www.dragongoserver.net/");
+  
+  /* A string which holds the response to the message */
+  private String response;
 
   /*
    * Creates a new message to send to the server.
@@ -26,7 +32,7 @@ class Message {
       case DOWNLOAD_GAME:
         // need to decide how to deal with owned_comments parameter
         address += "sgf.php?gid=" + args[0];
-        address += "&quick_mode=1";
+        address += "&owned_comments=1&quick_mode=1";
         break;
       case QUICK_PLAY:
         address += "quick_play.php?gid=" + args[0] + "&color=" 
@@ -44,6 +50,13 @@ class Message {
    */
   public void send() {
     System.out.println("Sending http request to " + address);
-    client.sendMessage(address);
+    response = client.sendMessage(address);
+  }
+
+  /*
+   * Returns the response from the server
+   */
+  public String getResponse() {
+    return response;
   }
 }

@@ -8,9 +8,10 @@
 #   QuickPlay
 # Need to get cookies working as part of this
 #
-# Parse output from commands
+# Parse output from commands and handle it in a meaningful way
 #
-# Think about exceptions
+# Think about exceptions - especially in the message class and the classes
+# it owns.
 #
 # Create a User class and prompt user for login details
 #
@@ -20,6 +21,8 @@
 #   checkForMoves();
 #   displayGame();
 # or something like that.
+#
+# Create classes for GamesList, Game, User - see notepad.
 #
 # Bring it to Android.
 #
