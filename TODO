@@ -29,7 +29,15 @@
 # Allow user to login, check status and set an option for 
 # periodic status check with notifcations
 #
-# Get to work on UI (so we can view games and make moves)
+# Get to work on UI (so we can view games and make moves).
+# See notepad for more. Android Developer Design site is a gold mine.
+#
+# Create a board class. This is a visual element, distinct from a game
+# (although its appearance will be driven by a game). Perhaps each game owns a
+# board?
+#
+# Create artwork - board, stones, icons (see Android Design site for a full
+# list of things we need to draw).
 #
 # Look at creating a widget
 #
