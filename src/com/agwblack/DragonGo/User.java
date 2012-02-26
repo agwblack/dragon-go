@@ -45,6 +45,9 @@ public class User {
     gameLists[3] = new GameList("Misc");
   }
 
+  /*
+   * Method to update all of a User's game lists
+   */
   void updateLists() {
     int i = 0;
     for (i = 0; i <= gameLists.length; ++i) {
