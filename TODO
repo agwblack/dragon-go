@@ -1,5 +1,47 @@
 # TODO list
+# #########
 #
+# Bring it to Android. Integrate so it builds.
+#
+# Get from login in screen to fully populated GamesListPager.
+#   Successfully login and create User (to pass to the GamesList activity)
+#   Design layout (based on ABS)
+#   Figure out how to store data and populate Lists
+#     Probably a ContentProvider and SQL database.
+#       Look up User in the database and get his GamesList. Then compare with
+#       what the server says and update accordingly.
+#   GamesListPager should be the opening Activity. It immediately checks for logged
+#   in User and if it can't find one it goes to Login Activity. We thus need a
+#   way for the app to remember who is logged in, option to automatically
+#   remember login details, etc.
+#
+# Implement optional automatic Status update check
+#   Using a service.
+#   Probably one service that performs the check and updates if necessary and
+#   then ends. This is also used by the refresh button and when we login/open
+#   the GamesList Activity.
+#   Another service which runs indefinitely (until the app is killed?) and
+#   calls the first service periodically.
+#
+# Add action bar for navigation, etc. (Use ActionBarSherlock)
+#   Implement Refresh button.
+#
+# Create a BoardView 
+#   probably using a GridLayout/GridView - what is the difference?
+#   Need to create some basic artwork for this
+# 
+# Implement Game Layout
+#   ActionBar
+#   BoardView
+#   Comments
+#   NavigationBar
+#
+# Look at theming (must be consistent with ABS)
+#
+# ############################################################
+#
+# OUTDATED:
+# #########
 # Implement all common commands
 #   DownloadGame
 #   Login
@@ -23,8 +65,6 @@
 # or something like that.
 #
 # Create classes for GamesList, Game, User - see notepad.
-#
-# Bring it to Android.
 #
 # Allow user to login, check status and set an option for 
 # periodic status check with notifcations
