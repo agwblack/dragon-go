@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">main</string>
+    <string name="app_name">Dragon Go</string>
     <string name="list_text_view">List Activity, Baby!!</string>
     <string name="button_press">Login</string>
     <string name="welcome_message">Welcome.\nPlease login.</string>

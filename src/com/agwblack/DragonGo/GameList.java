@@ -36,6 +36,7 @@ public class GameList {
   }
 
   // Methods referenced from update() method
+  /*
   void retrieveStatus();
   void parseStatus();
   void compareList();
@@ -44,6 +45,7 @@ public class GameList {
   void copyGame();
   void moveGame();
   void updateGame();
+  */
 
   /*
    * Method to return a string array containing the names of the opponents for

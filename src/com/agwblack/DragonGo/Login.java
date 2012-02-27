@@ -1,4 +1,4 @@
-package com.agwblack.androidui;
+package com.agwblack.DragonGo;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -8,7 +8,7 @@ import android.widget.Toast;
 import android.widget.TextView;
 import android.util.Log;
 
-public class main extends Activity
+public class Login extends Activity
 {
     /** tag for logging purpose */
     private static final String TAG = "***ANDROID_UI_MAIN***";
@@ -22,14 +22,13 @@ public class main extends Activity
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+        setContentView(R.layout.login);
         Log.d(TAG, "CREATED ACTIVITY MAIN");
         user = (TextView) findViewById(R.id.username);
         passwd = (TextView) findViewById(R.id.password);
     }
 
     /** Tries to login with the given details*/
-    //boolean login(CharSequence username, CharSequence password) {
     boolean login(String username, String password) {
       if (username.compareTo("agwblack") == 0 
           && password.compareTo("sp00ner!") == 0) {
@@ -44,7 +43,7 @@ public class main extends Activity
     public void launchListActivity(View view) {
       Log.d(TAG, "BUTTON PRESSED!!");
       if (login(user.getText().toString(), passwd.getText().toString())) {
-        Intent intent = new Intent(main.this, ListAct.class);
+        Intent intent = new Intent(Login.this, GamesList.class);
         startActivity(intent);
       } else {
         Toast failed =Toast.makeText(getApplicationContext(), "Bad username or password",

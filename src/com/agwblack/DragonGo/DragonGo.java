@@ -11,5 +11,7 @@ public class DragonGo extends Activity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        // Launch login view (if no one is logged in)
+
     }
 }
