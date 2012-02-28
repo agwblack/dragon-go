@@ -1,6 +1,7 @@
 package com.agwblack.DragonGo;
 
 import java.lang.Exception;
+import java.io.IOException;
 
 public class Message {
   /* The HttpClient instance*/
@@ -51,13 +52,13 @@ public class Message {
   /*
    * Sends the message to the server
    */
-  public void send() {
+  public void send() throws IOException {
     System.out.println("Sending http request to " + address);
-    try {
+    //try {
       response = client.sendMessage(address);
-    } catch (Exception e) {
-      System.err.println(e.getMessage());
-    }
+    //} catch (Exception e) {
+    //  System.err.println(e.getMessage());
+    //}
   }
 
   /*

@@ -34,7 +34,7 @@ public class User {
     args[0] = username;
     args[1] = password;
     Message msg = new Message(DGSEnumType.Command.LOGIN, args);
-    msg.send();
+    //msg.send();
   }
 
   void initialiseLists() {

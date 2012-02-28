@@ -10,7 +10,7 @@ public class GetMessage {
   static void getStatus() {
     String[] args = new String[0];
     Message msg = new Message(DGSEnumType.Command.QUICK_STATUS, args);
-    msg.send();
+    //msg.send();
   }
 
   /*
@@ -20,7 +20,7 @@ public class GetMessage {
     String[] args = new String[1];
     args[0] = username;
     Message msg = new Message(DGSEnumType.Command.QUICK_STATUS, args);
-    msg.send();
+    //msg.send();
     System.out.println(msg.getResponse());
   }
 

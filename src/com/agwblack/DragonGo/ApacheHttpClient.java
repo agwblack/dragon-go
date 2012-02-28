@@ -13,17 +13,17 @@ public class ApacheHttpClient implements HttpClientWrapper {
   /*CookieStore cookieStore = new BasicCookieStore();
   HttpContext localContext = new BasicHttpContext();
   */
-  public String sendMessage(String url) {
+  public String sendMessage(String url) throws IOException {
     //localContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
     HttpGet httpGet = new HttpGet(url);
     ResponseHandler<String> responseHandler = new BasicResponseHandler();
-    try {
+    //try {
       String responseBody = client.execute(httpGet, responseHandler);
       return responseBody;
-    } catch (IOException e) {
-      System.err.println(">>>>" + e.getMessage());
-      e.printStackTrace();
-    }
-    return null;
+    //} catch (IOException e) {
+      //System.err.println(">>>>" + e.getMessage());
+      //e.printStackTrace();
+    //}
+    //return null;
   }
 }

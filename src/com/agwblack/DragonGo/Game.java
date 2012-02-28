@@ -1,5 +1,7 @@
 package com.agwblack.DragonGo;
 
+import java.io.IOException;
+
 /* 
  * Class that contains everything pertaining to a particular game.
  * This includes sgf, opponent info, the last move made, the DGS specific game
@@ -39,7 +41,7 @@ public class Game {
     String[] args = new String[1];
     args[0] = gameID;
     Message msg = new Message(DGSEnumType.Command.DOWNLOAD_GAME, args);
-    msg.send();
+    try { msg.send(); } catch (IOException e) {}
     sgf = new Sgf(msg.getResponse());
   }
 

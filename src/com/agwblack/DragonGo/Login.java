@@ -8,6 +8,8 @@ import android.widget.Toast;
 import android.widget.TextView;
 import android.util.Log;
 
+import java.io.IOException;
+
 public class Login extends Activity
 {
     /** tag for logging purpose */
@@ -34,21 +36,17 @@ public class Login extends Activity
       args[0] = username;
       args[1] = password;
       Message msg = new Message(DGSEnumType.Command.LOGIN, args);
-      msg.send();
-      if (msg.getResponse().contains("#")) {
-        Log.e(TAG, msg.getResponse());
-        return false;
-      }
-      return true;
-      /*
-      if (username.compareTo("agwblack") == 0 
-          && password.compareTo("sp00ner!") == 0) {
+      try {
+        msg.send();
+        if (msg.getResponse().contains("#")) {
+          //Log.e(TAG, msg.getResponse());
+          return false;
+        }
         return true;
-      } else {
-        Log.d(TAG, "Username: " + username + "Password: " + password);
-        return false;
+      } catch (IOException e) {
+        Log.e(TAG, e.getMessage());
       }
-      */
+      return false;
     }
 
     /** Called when we click the button specified in the layout main.xml*/
