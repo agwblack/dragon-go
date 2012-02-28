@@ -41,7 +41,7 @@ public class Game {
     String[] args = new String[1];
     args[0] = gameID;
     Message msg = new Message(DGSEnumType.Command.DOWNLOAD_GAME, args);
-    try { msg.send(); } catch (IOException e) {}
+    msg.send();
     sgf = new Sgf(msg.getResponse());
   }
 

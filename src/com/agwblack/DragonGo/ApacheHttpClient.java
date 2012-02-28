@@ -10,20 +10,26 @@ import  java.io.IOException;
 
 public class ApacheHttpClient implements HttpClientWrapper {
   HttpClient client = new DefaultHttpClient();
+  String responseBody;
   /*CookieStore cookieStore = new BasicCookieStore();
   HttpContext localContext = new BasicHttpContext();
   */
-  public String sendMessage(String url) throws IOException {
+
+  public DGSEnumType.Error sendMessage(String url) {
     //localContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
     HttpGet httpGet = new HttpGet(url);
     ResponseHandler<String> responseHandler = new BasicResponseHandler();
-    //try {
-      String responseBody = client.execute(httpGet, responseHandler);
-      return responseBody;
-    //} catch (IOException e) {
-      //System.err.println(">>>>" + e.getMessage());
-      //e.printStackTrace();
-    //}
-    //return null;
+    try {
+      responseBody = client.execute(httpGet, responseHandler);
+    } catch (IOException e) {
+      System.err.println(">>>>" + e.getMessage());
+      e.printStackTrace();
+      return DGSEnumType.Error.CANNOT_FIND_SERVER;
+    }
+    return DGSEnumType.Error.NONE;
+  }
+
+  public String getMessageResponse() {
+    return responseBody;
   }
 }

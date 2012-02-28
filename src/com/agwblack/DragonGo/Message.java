@@ -4,16 +4,16 @@ import java.lang.Exception;
 import java.io.IOException;
 
 public class Message {
-  /* The HttpClient instance*/
+  /** The HttpClient instance*/
   ApacheHttpClient client = new ApacheHttpClient();
   
-  /* The Base address for the server */
+  /** The Base address for the server */
   private String address = new String("http://www.dragongoserver.net/");
   
-  /* A string which holds the response to the message */
+  /** A string which holds the response to the message */
   private String response;
 
-  /*
+  /**
    * \brief Creates a new message to send to the server.
    * The size of the args parameter may determine what kind of message gets
    * sent.
@@ -49,19 +49,21 @@ public class Message {
     }
   }
 
-  /*
+  /**
    * Sends the message to the server
    */
-  public void send() throws IOException {
+  public DGSEnumType.Error send() {
+    DGSEnumType.Error error = DGSEnumType.Error.NONE;
     System.out.println("Sending http request to " + address);
-    //try {
-      response = client.sendMessage(address);
-    //} catch (Exception e) {
-    //  System.err.println(e.getMessage());
-    //}
+    error = client.sendMessage(address);
+    if (error == DGSEnumType.Error.NONE) {
+      response = client.getMessageResponse();
+      return error;
+    } 
+    return error;
   }
 
-  /*
+  /**
    * Returns the response from the server
    */
   public String getResponse() {

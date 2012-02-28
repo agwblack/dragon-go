@@ -9,4 +9,10 @@ public class DGSEnumType {
     QUICK_PLAY,
     QUICK_STATUS
   }
+
+  public static enum Error {
+    CANNOT_FIND_SERVER,
+    BAD_LOGIN_DETAILS,
+    NONE
+  }
 }

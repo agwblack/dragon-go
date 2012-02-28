@@ -8,12 +8,10 @@ import android.widget.Toast;
 import android.widget.TextView;
 import android.util.Log;
 
-import java.io.IOException;
-
 public class Login extends Activity
 {
     /** tag for logging purpose */
-    private static final String TAG = "***ANDROID_UI_MAIN***";
+    private static final String TAG = "DragonGo Login";
 
     private TextView user;
     private TextView passwd;
@@ -25,38 +23,49 @@ public class Login extends Activity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
-        Log.d(TAG, "CREATED ACTIVITY MAIN");
         user = (TextView) findViewById(R.id.username);
         passwd = (TextView) findViewById(R.id.password);
     }
 
     /** Tries to login with the given details*/
-    boolean login(String username, String password) {
+    DGSEnumType.Error login(String username, String password) {
       String[] args = new String[2];
       args[0] = username;
       args[1] = password;
       Message msg = new Message(DGSEnumType.Command.LOGIN, args);
-      try {
-        msg.send();
-        if (msg.getResponse().contains("#")) {
-          //Log.e(TAG, msg.getResponse());
-          return false;
+      DGSEnumType.Error error = msg.send();
+      if (error == DGSEnumType.Error.NONE) {
+        // Parse the result
+        if (msg.getResponse().contains("#Error")) {
+          // something went wrong
+          Log.e(TAG, msg.getResponse());
+          error = DGSEnumType.Error.BAD_LOGIN_DETAILS;
+        } else {
+          // We have a valid user!
         }
-        return true;
-      } catch (IOException e) {
-        Log.e(TAG, e.getMessage());
-      }
-      return false;
+      } else {
+        // We could not find the server
+      } 
+      return error;
     }
 
     /** Called when we click the button specified in the layout main.xml*/
     public void launchListActivity(View view) {
-      Log.d(TAG, "BUTTON PRESSED!!");
-      if (login(user.getText().toString(), passwd.getText().toString())) {
+      DGSEnumType.Error error = DGSEnumType.Error.NONE;
+      error = login(user.getText().toString(), passwd.getText().toString());
+      if (error == DGSEnumType.Error.NONE) {
+        // Login OK - Load the next activity
         Intent intent = new Intent(Login.this, GamesList.class);
         startActivity(intent);
-      } else {
-        Toast failed =Toast.makeText(getApplicationContext(), "Bad username or password",
+      } 
+      else if (error == DGSEnumType.Error.BAD_LOGIN_DETAILS) {
+        Toast failed = Toast.makeText(getApplicationContext(), "Bad username or password",
+          Toast.LENGTH_SHORT);
+        failed.show();
+      }
+      else if (error == DGSEnumType.Error.CANNOT_FIND_SERVER) {
+        Toast failed = Toast.makeText(getApplicationContext(), 
+            "Cannot find server - are you connected to the Internet?",
           Toast.LENGTH_SHORT);
         failed.show();
       }
