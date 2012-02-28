@@ -1,10 +1,9 @@
 # TODO list
 # #########
 #
-# Bring it to Android. Integrate so it builds.
-#
 # Get from login in screen to fully populated GamesListPager.
 #   Successfully login and create User (to pass to the GamesList activity)
+#     Requires session cookie issues to be resolved
 #   Design layout (based on ABS)
 #   Figure out how to store data and populate Lists
 #     Probably a ContentProvider and SQL database.
