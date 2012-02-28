@@ -1,3 +1,5 @@
+package com.agwblack.DragonGo;
+
 /*
  * A class that captures the essence of a move on the board, i.e. its
  * coordinates, and which colour made it.

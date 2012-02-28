@@ -1,3 +1,5 @@
+package com.agwblack.DragonGo;
+
 public class DGSEnumType {
 
   public static enum Command {

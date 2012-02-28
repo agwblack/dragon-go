@@ -1,3 +1,5 @@
+package com.agwblack.DragonGo;
+
 /*
  * Class that represents the User. Contains information like username, password
  * and games lists

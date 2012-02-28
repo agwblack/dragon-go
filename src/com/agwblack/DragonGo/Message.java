@@ -1,5 +1,8 @@
+package com.agwblack.DragonGo;
 
-class Message {
+import java.lang.Exception;
+
+public class Message {
   /* The HttpClient instance*/
   ApacheHttpClient client = new ApacheHttpClient();
   
@@ -10,7 +13,7 @@ class Message {
   private String response;
 
   /*
-   * Creates a new message to send to the server.
+   * \brief Creates a new message to send to the server.
    * The size of the args parameter may determine what kind of message gets
    * sent.
    *
@@ -50,7 +53,11 @@ class Message {
    */
   public void send() {
     System.out.println("Sending http request to " + address);
-    response = client.sendMessage(address);
+    try {
+      response = client.sendMessage(address);
+    } catch (Exception e) {
+      System.err.println(e.getMessage());
+    }
   }
 
   /*

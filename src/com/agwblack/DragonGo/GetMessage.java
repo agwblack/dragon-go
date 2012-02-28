@@ -1,3 +1,5 @@
+package com.agwblack.DragonGo;
+
 // Main class
 
 public class GetMessage {

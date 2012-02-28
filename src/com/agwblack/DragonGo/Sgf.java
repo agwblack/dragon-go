@@ -1,3 +1,5 @@
+package com.agwblack.DragonGo;
+
 /*
  * Class that holds the SGF information for a game.
  * For now this just holds SGF info and accessor methods, but we may add more

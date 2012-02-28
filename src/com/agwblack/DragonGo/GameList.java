@@ -1,3 +1,5 @@
+package com.agwblack.DragonGo;
+
 /* Class which gathers and holds information about games in a particular
  * category
  */

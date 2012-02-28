@@ -1,3 +1,5 @@
+package com.agwblack.DragonGo;
+
 import  org.apache.http.client.HttpClient;
 import  org.apache.http.client.ResponseHandler;
 import  org.apache.http.client.methods.HttpGet;
@@ -8,8 +10,11 @@ import  java.io.IOException;
 
 public class ApacheHttpClient implements HttpClientWrapper {
   HttpClient client = new DefaultHttpClient();
-  
+  /*CookieStore cookieStore = new BasicCookieStore();
+  HttpContext localContext = new BasicHttpContext();
+  */
   public String sendMessage(String url) {
+    //localContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
     HttpGet httpGet = new HttpGet(url);
     ResponseHandler<String> responseHandler = new BasicResponseHandler();
     try {

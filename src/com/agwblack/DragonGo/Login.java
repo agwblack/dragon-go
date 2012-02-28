@@ -30,6 +30,17 @@ public class Login extends Activity
 
     /** Tries to login with the given details*/
     boolean login(String username, String password) {
+      String[] args = new String[2];
+      args[0] = username;
+      args[1] = password;
+      Message msg = new Message(DGSEnumType.Command.LOGIN, args);
+      msg.send();
+      if (msg.getResponse().contains("#")) {
+        Log.e(TAG, msg.getResponse());
+        return false;
+      }
+      return true;
+      /*
       if (username.compareTo("agwblack") == 0 
           && password.compareTo("sp00ner!") == 0) {
         return true;
@@ -37,6 +48,7 @@ public class Login extends Activity
         Log.d(TAG, "Username: " + username + "Password: " + password);
         return false;
       }
+      */
     }
 
     /** Called when we click the button specified in the layout main.xml*/

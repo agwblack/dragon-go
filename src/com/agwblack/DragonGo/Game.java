@@ -1,3 +1,5 @@
+package com.agwblack.DragonGo;
+
 /* 
  * Class that contains everything pertaining to a particular game.
  * This includes sgf, opponent info, the last move made, the DGS specific game
