@@ -9,6 +9,8 @@ public class GamesList extends Activity {
 
   public final static String TAG = "DragonGo GamesList";
 
+  //GameList immediate;
+
   @Override
     public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
@@ -21,6 +23,19 @@ public class GamesList extends Activity {
       } else {
         Log.w(TAG, "Couldn't get username");
       }
+
+      // get user session cookie 
+
+      // Now we need to populate the gamesLists
+      // First we just try to get running games
+      // This involves a quick status request which we can then parse to get
+      // the list.
+
+      // immediate.update(sessionCookie);
+
+
     }
+
+  
 }
 
