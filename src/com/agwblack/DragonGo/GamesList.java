@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.widget.TextView;
 import android.util.Log;
 
+// It may be advantageous to have this activity extend ListActivity
+// rather than vanilla Activity
 public class GamesList extends Activity {
 
   public final static String TAG = "DragonGo GamesList";
@@ -14,7 +16,7 @@ public class GamesList extends Activity {
   @Override
     public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-      setContentView(R.layout.gameslist);
+      setContentView(R.layout.gameslist); // This needs to be a list view
       TextView display = (TextView) findViewById(R.id.user);
       String name = getIntent().getExtras().getString("userName");
       if (name != null) {
@@ -35,6 +37,7 @@ public class GamesList extends Activity {
 
 
     }
+
 
   
 }

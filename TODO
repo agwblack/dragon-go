@@ -4,6 +4,22 @@
 # Get from login in screen to fully populated GamesListPager.
 #   Successfully login and create User (to pass to the GamesList activity)
 #     Requires session cookie issues to be resolved
+#       We should do this with a sqlite database which stores cookies and other
+#       userdata. Firefox stores cookies in such a database. It seems we have 2
+#       cookies to take care of for each user.
+#         Database structure:
+#           Users
+#             Cookies
+#               UserCookie
+#               SessionCookie
+#             GameLists
+#               Games
+#       Checkout this tutorial for more on SQLite databases in Android:
+#       http://www.vogella.de/articles/AndroidSQLite/article.html
+#       Remember, we create/update user and cookie data in the Login Activity,
+#       then retrieve that data in the GamesList Activity (Passing the username
+#       around as a "key" to the database).
+#               
 #   Design layout (based on ABS)
 #   Figure out how to store data and populate Lists
 #     Probably a ContentProvider and SQL database.
