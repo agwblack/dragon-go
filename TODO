@@ -4,6 +4,8 @@
 # Get from login in screen to fully populated GamesListPager.
 #   Successfully login and create User (to pass to the GamesList activity)
 #     Requires session cookie issues to be resolved
+#       (link for cookie management:
+#       http://hc.apache.org/httpcomponents-client-ga/tutorial/html/statemgmt.html)
 #       We should do this with a sqlite database which stores cookies and other
 #       userdata. Firefox stores cookies in such a database. It seems we have 2
 #       cookies to take care of for each user.

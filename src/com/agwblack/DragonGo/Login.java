@@ -8,6 +8,8 @@ import android.widget.Toast;
 import android.widget.TextView;
 import android.util.Log;
 
+import  org.apache.http.cookie.Cookie;
+
 public class Login extends Activity
 {
     /** tag for logging purpose */
@@ -27,7 +29,7 @@ public class Login extends Activity
         passwd = (TextView) findViewById(R.id.password);
     }
 
-    /** Tries to login with the given details*/
+    /** Tries to login with the given details */
     DGSEnumType.Error login(String username, String password) {
       String[] args = new String[2];
       args[0] = username;
@@ -46,6 +48,18 @@ public class Login extends Activity
           // activate it once we pass the username through to the
           // GamesList Activity. In particular we must add username, password
           // and session cookie
+          /** Temporary: Attempt to grab the cookie,deconstruct it, reconstruct
+           * it and perform a getStatus request - Eventually this will have the
+           * database as an intermediate step in this, so we can access the
+           * data from anywhere */
+          // Get cookies from message
+             Cookie[] cookies = msg.getCookies();
+          // display cookies in log
+             for (int i = 0; i != cookies.length; ++i) {
+               System.out.println(cookies[i].toString());
+             }
+          // buildCookie()
+          // getStatus()
         }
       } else {
         // We could not find the server

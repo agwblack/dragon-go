@@ -6,10 +6,12 @@ import  org.apache.http.client.methods.HttpGet;
 import  org.apache.http.impl.client.DefaultHttpClient;
 import  org.apache.http.impl.client.BasicResponseHandler;
 import  org.apache.http.impl.client.AbstractHttpClient;
+import  org.apache.http.cookie.Cookie;
 import  java.io.IOException;
+import  java.util.List;
 
 public class ApacheHttpClient implements HttpClientWrapper {
-  HttpClient client = new DefaultHttpClient();
+  DefaultHttpClient client = new DefaultHttpClient();
   String responseBody;
   /*CookieStore cookieStore = new BasicCookieStore();
   HttpContext localContext = new BasicHttpContext();
@@ -31,5 +33,14 @@ public class ApacheHttpClient implements HttpClientWrapper {
 
   public String getMessageResponse() {
     return responseBody;
+  }
+
+  public Cookie[] getCookies() {
+    List<Cookie> cs = client.getCookieStore().getCookies();
+    Cookie[] cookies = new Cookie[cs.size()];
+    for (int i = 0; i != cs.size(); ++i) {
+      cookies[i] = cs.get(i);
+    }
+    return cookies;
   }
 }

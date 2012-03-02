@@ -3,6 +3,8 @@ package com.agwblack.DragonGo;
 import java.lang.Exception;
 import java.io.IOException;
 
+import  org.apache.http.cookie.Cookie;
+
 public class Message {
   /** The HttpClient instance*/
   ApacheHttpClient client = new ApacheHttpClient();
@@ -68,5 +70,14 @@ public class Message {
    */
   public String getResponse() {
     return response;
+  }
+
+  /**
+   * Returns the cookies downloaded from the messages
+   * FIXME: We should really make this less dependent on the Apache Cookie class -
+   * easier once we know precisely what we need to store
+   */
+  public Cookie[] getCookies() {
+    return client.getCookies();
   }
 }
