@@ -9,6 +9,7 @@ import android.widget.TextView;
 import android.util.Log;
 
 import  org.apache.http.cookie.Cookie;
+import  org.apache.http.impl.cookie.BasicClientCookie;
 
 public class Login extends Activity
 {
@@ -16,6 +17,7 @@ public class Login extends Activity
     private static final String TAG = "DragonGo Login";
 
     private TextView user;
+    // FIXME: obfuscate password in TextView
     private TextView passwd;
 
 
@@ -53,13 +55,41 @@ public class Login extends Activity
            * database as an intermediate step in this, so we can access the
            * data from anywhere */
           // Get cookies from message
-             Cookie[] cookies = msg.getCookies();
+          Cookie[] cookies = msg.getCookies();
+
           // display cookies in log
-             for (int i = 0; i != cookies.length; ++i) {
-               System.out.println(cookies[i].toString());
-             }
-          // buildCookie()
-          // getStatus()
+          for (int i = 0; i != cookies.length; ++i) {
+            System.out.println(cookies[i].toString());
+          }
+
+          // Create new cookies from the information we got from those we just
+          // downloaded
+          BasicClientCookie cookie = new BasicClientCookie(cookies[0].getName(), cookies[0].getValue());
+          cookie.setVersion(cookies[0].getVersion());
+          cookie.setDomain(cookies[0].getDomain());
+          cookie.setPath(cookies[0].getPath());
+          cookie.setExpiryDate(cookies[0].getExpiryDate());
+          System.out.println(cookie.toString());
+
+          BasicClientCookie cookie2 = new BasicClientCookie(cookies[1].getName(), cookies[1].getValue());
+          cookie2.setVersion(cookies[1].getVersion());
+          cookie2.setDomain(cookies[1].getDomain());
+          cookie2.setPath(cookies[1].getPath());
+          cookie2.setExpiryDate(cookies[1].getExpiryDate());
+          System.out.println(cookie2.toString());
+
+          // Use our new cookies to get status without specifying the user
+          // (since that information is contained within the cookies)
+          String[] args2 = new String[0];
+          Message statMsg = new Message(DGSEnumType.Command.QUICK_STATUS, args);
+          statMsg.setCookies(cookie);
+          statMsg.setCookies(cookie2);
+          statMsg.send();
+          System.out.println(statMsg.getResponse());
+
+          /** The above works! Now implement database so we can do the 
+           *  buildCookie/getStatus in the GamesList activity
+           */
         }
       } else {
         // We could not find the server

@@ -80,4 +80,15 @@ public class Message {
   public Cookie[] getCookies() {
     return client.getCookies();
   }
+
+  /**
+   * Adds Cookies to the message
+   * FIXME: Hopefully we can load these automatically from the database
+   * depending on message type, instead of adding the manually by calling this
+   * command
+   */
+  public void setCookies(Cookie ck) {
+    client.addCookie(ck);
+  }
+
 }

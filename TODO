@@ -8,8 +8,11 @@
 #       http://hc.apache.org/httpcomponents-client-ga/tutorial/html/statemgmt.html)
 #       We should do this with a sqlite database which stores cookies and other
 #       userdata. Firefox stores cookies in such a database. It seems we have 2
-#       cookies to take care of for each user.
-#         Database structure:
+#       cookies to take care of for each user. One question is where we should
+#       insert/extract the cookies into the database - probably in the Message
+#       class since this allows us to act dependent on the type of message
+#       being sent.
+#         Database structure: (may need to rethink this)
 #           Users
 #             Cookies
 #               UserCookie

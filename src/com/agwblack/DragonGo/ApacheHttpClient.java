@@ -43,4 +43,8 @@ public class ApacheHttpClient implements HttpClientWrapper {
     }
     return cookies;
   }
+
+  public void addCookie(Cookie ck) {
+    client.getCookieStore().addCookie(ck);
+  }
 }

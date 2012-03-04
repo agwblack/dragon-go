@@ -1,44 +1,64 @@
 package com.agwblack.DragonGo;
 
-import android.app.Activity;
+import android.app.ListActivity;
 import android.os.Bundle;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.ListView;
+import android.widget.ArrayAdapter;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView;
+import android.view.View.OnClickListener;
+import android.view.View;
 import android.util.Log;
 
-// It may be advantageous to have this activity extend ListActivity
-// rather than vanilla Activity
-public class GamesList extends Activity {
+import java.util.*;
+
+public class GamesList extends ListActivity {
 
   public final static String TAG = "DragonGo GamesList";
+  /** Temporary list for testing - Need to actually import this list from the
+   * Status request and the database */
+  List<String> games = new ArrayList<String>(); 
+  ArrayAdapter<String> arrayAdapter;
 
   //GameList immediate;
 
   @Override
     public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-      setContentView(R.layout.gameslist); // This needs to be a list view
-      TextView display = (TextView) findViewById(R.id.user);
-      String name = getIntent().getExtras().getString("userName");
-      if (name != null) {
-        String message = "Hello " + name;
-        display.setText(message);
-      } else {
-        Log.w(TAG, "Couldn't get username");
-      }
 
-      // get user session cookie 
+      arrayAdapter = new ArrayAdapter<String>(this, R.layout.list_item, games);
+      //setListAdapter(new ArrayAdapter<String>(this, R.layout.list_item, games));
+      setListAdapter(arrayAdapter);
+      ListView lv = getListView();
+      lv.setTextFilterEnabled(true);
 
-      // Now we need to populate the gamesLists
-      // First we just try to get running games
-      // This involves a quick status request which we can then parse to get
-      // the list.
+      games.add("game1");
+      games.add("game2");
+      games.add("game3");
 
-      // immediate.update(sessionCookie);
+      /** This sets the behaviour for when we click on a list item - Obviously
+       * needs changing later */
+      lv.setOnItemClickListener(new OnItemClickListener() {
+        public void onItemClick(AdapterView<?> parent, View view, int position,
+            long id) {
+          // When clicked, show a toast with the TextView text
+          Toast.makeText(getApplicationContext(), ((TextView) view).getText(),
+              Toast.LENGTH_SHORT).show();
+        }
+      });
 
-
+      update();
+      //arrayAdapter.add(getIntent().getExtras().getString("userName"));
     }
 
+  /** Method to update the games array */
+  void update() {
+    /** example */
+    arrayAdapter.add(getIntent().getExtras().getString("userName"));
+    // get user session cookie from database
+    // update games array using QUICK_STATUS message
+  }
 
-  
 }
-
