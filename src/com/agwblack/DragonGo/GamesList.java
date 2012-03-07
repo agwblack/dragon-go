@@ -21,12 +21,15 @@ public class GamesList extends ListActivity {
    * Status request and the database */
   List<String> games = new ArrayList<String>(); 
   ArrayAdapter<String> arrayAdapter;
+  DatabaseHandler db;
 
   //GameList immediate;
 
   @Override
     public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
+
+      db = new DatabaseHandler(this);
 
       arrayAdapter = new ArrayAdapter<String>(this, R.layout.list_item, games);
       //setListAdapter(new ArrayAdapter<String>(this, R.layout.list_item, games));
@@ -49,8 +52,11 @@ public class GamesList extends ListActivity {
         }
       });
 
+
       update();
       //arrayAdapter.add(getIntent().getExtras().getString("userName"));
+      /** Temp method to test database  -  remove */
+      readDatabase();
     }
 
   /** Method to update the games array */
@@ -59,6 +65,24 @@ public class GamesList extends ListActivity {
     arrayAdapter.add(getIntent().getExtras().getString("userName"));
     // get user session cookie from database
     // update games array using QUICK_STATUS message
+
+    /** Testing database - Delete this! */
+    Log.d(TAG, "Inserting into Database");
+    db.addUser(new User("andy", "passw"));
+    db.addUser(new User("dave", "saxophone"));
+    db.addUser(new User("sammy", "blimmin7687"));
+
   }
 
+  /**Just for testing database - DELETE THIS METHOD */
+  void readDatabase() {
+    Log.d(TAG, "Reading all users");
+    List<User> users = db.getAllUsers();
+
+    for (User us : users) {
+      String log = "id: " + us.getID() + ", username: " + us.getUsername()
+        + ", password: " + us.getPassword();
+      Log.d(TAG, log);
+    }
+  }
 }

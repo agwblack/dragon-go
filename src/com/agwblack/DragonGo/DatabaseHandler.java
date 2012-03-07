@@ -2,8 +2,13 @@ package com.agwblack.DragonGo;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.Cursor;
 import android.content.Context;
+import android.content.ContentValues;
 import android.util.Log;
+
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Database Handler class.
@@ -35,7 +40,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
   // Database creation statement
   private static final String DATABASE_CREATE = "create table " + TABLE_USERS +
     "( " + COLUMN_ID + " integer primary key autoincrement, " + COLUMN_USERNAME
-    + " text not null);";
+    + " text not null, " + COLUMN_PASSWORD + " text not null);";
 
   public DatabaseHandler(Context context) {
     super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -45,7 +50,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
   public void onCreate(SQLiteDatabase database) {
     // This function is only called if the constructor could not find the
     // database to open
-    database.execSQL(DATABASE_CREATE)
+    database.execSQL(DATABASE_CREATE);
   }
 
   @Override
@@ -60,16 +65,85 @@ public class DatabaseHandler extends SQLiteOpenHelper {
   // Clearly we will need to reevaluate some of these methods, currently this
   // is just following:
   // http://www.androidhive.info/2011/11/android-sqlite-database-tutorial/
-  public void addUser(User user) {}
+  public void addUser(User user) {
+    // open the database for writing
+    SQLiteDatabase db = this.getWritableDatabase();
 
-  public User getUser(int id) {}
+    // Set up the values we wish to add
+    ContentValues values = new ContentValues();
+    values.put(COLUMN_USERNAME, user.getUsername());
+    values.put(COLUMN_PASSWORD, user.getPassword());
 
-  public List<User> getAllUsers() {}
+    // Insert values into the database and close it
+    db.insert(TABLE_USERS, null, values);
+    db.close();
+  }
 
-  public int getUsersCount() {}
+  public User getUser(int id) {
+    // FIXME: Might we have problems if cursor is null? Need exception handling
+    SQLiteDatabase db = this.getReadableDatabase();
 
-  public void updateUser(User user) {}
+    Cursor cursor = db.query(TABLE_USERS, 
+        new String[] { COLUMN_ID, COLUMN_USERNAME, COLUMN_PASSWORD }, 
+        COLUMN_ID + "=?",
+        new String[] {String.valueOf(id)}, null, null, null, null);
 
-  public void deleteUser(User user) {}
+    if (cursor != null)
+      cursor.moveToFirst();
+
+    User user = new User(Integer.parseInt(cursor.getString(0)), 
+        cursor.getString(1), cursor.getString(2));
+
+    return user;
+  }
+
+  public List<User> getAllUsers() {
+    List<User> userList = new ArrayList<User>();
+
+    String selectQuery = "SELECT * FROM " + TABLE_USERS;
+
+    SQLiteDatabase db = this.getWritableDatabase();
+    Cursor cursor = db.rawQuery(selectQuery, null);
+
+    // looping through all rows and adding to list
+    if (cursor.moveToFirst()) {
+      do {
+        User user = new User();
+        user.setID(Integer.parseInt(cursor.getString(0)));
+        user.setUsername(cursor.getString(1));
+        user.setPassword(cursor.getString(2));
+        userList.add(user);
+      } while (cursor.moveToNext());
+    }
+
+    return userList;
+  }
+
+  public int getUsersCount() {
+    String countQuery = "SELECT * FROM " + TABLE_USERS;
+    SQLiteDatabase db = this.getReadableDatabase();
+    Cursor cursor = db.rawQuery(countQuery, null);
+    cursor.close();
+
+    return cursor.getCount();
+  }
+
+  public int updateUser(User user) {
+    SQLiteDatabase db = this.getWritableDatabase();
+    ContentValues values = new ContentValues();
+    values.put(COLUMN_USERNAME, user.getUsername());
+    values.put(COLUMN_PASSWORD, user.getPassword());
+
+    return db.update(TABLE_USERS, values, COLUMN_ID + "=?",
+        new String[] { String.valueOf(user.getID()) });
+  }
+
+  public void deleteUser(User user) {
+    SQLiteDatabase db = this.getWritableDatabase();
+
+    db.delete(TABLE_USERS, COLUMN_ID + "=?", 
+        new String[] { String.valueOf(user.getID()) });
+    db.close();
+  }
 
 }
