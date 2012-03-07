@@ -49,6 +49,8 @@
 # Create a BoardView 
 #   probably using a GridLayout/GridView - what is the difference?
 #   Need to create some basic artwork for this
+#   Should copy GoDroid in having the 2 moves prior to the most recent move
+#   numbered.
 # 
 # Implement Game Layout
 #   ActionBar
