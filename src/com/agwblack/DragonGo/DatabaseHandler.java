@@ -22,10 +22,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
   private static final String COLUMN_PASSWORD = "password";
 
   // Maybe we can have a second table that deals with cookies, linked to the
-  // users by id - each table can be thought of as an object (and needs an
-  // appropriate implementation). This implementation uses cookies as
-  // semi-colon separated strings which we extract with a suitable utility
-  // method
+  // users by id (using sql JOINs) - each table can be thought of as an object
+  // (and needs an appropriate implementation). This implementation uses 
+  // cookies as semi-colon separated strings which we extract with a suitable 
+  // utility method
   private static final String COLUMN_FIRST_COOKIE = "cookie1";
   private static final String COLUMN_SECOND_COOKIE = "cookie2";
 
@@ -38,13 +38,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     + " text not null);";
 
   public DatabaseHandler(Context context) {
-    super(context,  DATABASE_NAME, null, DATABASE_VERSION);
+    super(context, DATABASE_NAME, null, DATABASE_VERSION);
   }
 
   @Override
   public void onCreate(SQLiteDatabase database) {
-    // Need to check if database exists and only create it if it doesn't.
-    // Otherwise we need to load it.
+    // This function is only called if the constructor could not find the
+    // database to open
     database.execSQL(DATABASE_CREATE)
   }
 
