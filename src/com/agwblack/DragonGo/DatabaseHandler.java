@@ -24,39 +24,57 @@ import java.util.ArrayList;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
 
-  // Constants
+  // Constants for creating database
   private static final String DATABASE_NAME = "users.db";
   private static final int DATABASE_VERSION = 1;
+  
+  // Constants for creating Users table
   private static final String TABLE_USERS = "users";
   private static final String COLUMN_ID = "_id";
   private static final String COLUMN_USERNAME = "username";
   private static final String COLUMN_PASSWORD = "password";
+  // Use SQL joins to access cookie table using these ids
+  private static final String COLUMN_HANDLE_COOKIE = "handle_cookie";
+  private static final String COLUMN_SESSION_COOKIE = "session_cookie";
+  // Consider having a separate table for games, but either way we need a comma
+  // separated String of game IDs in the users table
+  private static final String COLUMN_ACTIVE_GAMES = "active_games";
 
-  // Maybe we can have a second table that deals with cookies, linked to the
-  // users by id (using sql JOINs) - each table can be thought of as an object
-  // (and needs an appropriate implementation). This implementation uses 
-  // cookies as semi-colon separated strings which we extract with a suitable 
-  // utility method
-  private static final String COLUMN_COOKIE1_ID = "cookie1";
-  private static final String COLUMN_COOKIE2_ID = "cookie2";
-
-  // Likewise, we may wish to have games as a separate table, or alternatively
-  // just represented by a semi-colon separated string in the user table
-  private static final String COLUMN_ACTIVE_GAMES = "activegames";
-  // Database creation statement
-  private static final String DATABASE_CREATE = "create table " + TABLE_USERS +
+  // User table creation statement
+  private static final String USER_TABLE_CREATE = "create table " + TABLE_USERS +
     "( " + COLUMN_ID + " integer primary key autoincrement, " + COLUMN_USERNAME
-    + " text not null, " + COLUMN_PASSWORD + " text not null);";
+    + " text not null, " + COLUMN_PASSWORD + " text not null, " + 
+    COLUMN_HANDLE_COOKIE + " interger, " + COLUMN_SESSION_COOKIE +  " integer);";
 
+  // Constants for creating Cookies table
+  private static final String TABLE_COOKIES = "cookies";
+  private static final String COLUMN_COOKIE_ID = "id";
+  private static final String COLUMN_COOKIE_NAME = "name";
+  private static final String COLUMN_COOKIE_VALUE = "value";
+  private static final String COLUMN_COOKIE_VERSION = "version";
+  private static final String COLUMN_COOKIE_DOMAIN = "domain";
+  private static final String COLUMN_COOKIE_PATH = "path";
+  private static final String COLUMN_COOKIE_EXPIRY_DATE = "expiry_date";
+
+  // Cookie table creation statement
+  private static final String COOKIE_TABLE_CREATE = "create table " + 
+    TABLE_COOKIES + "( " + COLUMN_COOKIE_ID + 
+    " integer primary key autoincrement " + COLUMN_COOKIE_NAME + 
+    " text not null, " + COLUMN_COOKIE_VALUE + " text not null, " +
+    COOKIE_COLUMN_VERSION + " text not null, " + COLUMN_COOKIE_DOMAIN +
+    " text not null, " + COLUMN_COOKIE_PATH + " text not null, " + 
+    COLUMN_COOKIE_EXPIRY_DATE + " text not null);";
+
+  /** Constructor - Attempts to open database */
   public DatabaseHandler(Context context) {
     super(context, DATABASE_NAME, null, DATABASE_VERSION);
   }
 
   @Override
+  /** Called if database could not be found */
   public void onCreate(SQLiteDatabase database) {
-    // This function is only called if the constructor could not find the
-    // database to open
-    database.execSQL(DATABASE_CREATE);
+    database.execSQL(USER_TABLE_CREATE);
+    database.execSQL(COOKIE_TABLE_CREATE);
   }
 
   @Override
@@ -159,6 +177,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
    */
   public void addHandleCookie(User user, Cookie cookie) {
     // Add Cookie to Cookie table
+    int id = addCookie(cookie);
     // Add Cookie ID to User table
   }
 
@@ -169,6 +188,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
    */
   public void addSessionCodeCookie(User user, Cookie cookie) {
     // Add Cookie to Cookie table - Add cookie
+    int id = addCookie(cookie);
     // Add Cookie ID to User table
   }
 
@@ -178,8 +198,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
    * Returns null if we couldn't access the cookie
    */
   public Cookie getHandleCookie(User user) {
-    // Identify the correct ID to access the Cookie table, then call
-    // getCookie(ID)
+    // Get handle cookie id from user table
+    // return getCookie(id)
   }
 
   /**
@@ -188,8 +208,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
    * Returns null if we couldn't access the cookie
    */
   public Cookie getSessionCodeCookie(User user) {
-    // Identify the correct ID to access the Cookie table, then call
-    // getCookie(ID)
+    // Get session cookie id from user table
+    // return getCookie(id)
   }
 
   /**
@@ -199,8 +219,21 @@ public class DatabaseHandler extends SQLiteOpenHelper {
    * Returns -1 if we couldn't add the cookie.
    */
   private int addCookie(Cookie cookie) {
-    // Contains all the work to extract the cookie strings from the cookie and
-    // place them into the table
+    // open the database for writing
+    SQLiteDatabase db = this.getWritableDatabase();
+
+    // Set up the values we wish to add
+    ContentValues values = new ContentValues();
+    values.put(COLUMN_COOKIE_NAME, cookie.getName());
+    values.put(COLUMN_COOKIE_VALUE, cookie.getValue());
+    values.put(COLUMN_COOKIE_VERSION, cookie.getVersion());
+    values.put(COLUMN_COOKIE_PATH, cookie.getPath());
+    values.put(COLUMN_COOKIE_DOMAIN, cookie.getDomain());
+    values.put(COLUMN_COOKIE_EXPIRY_DATE, cookie.getExpiryDate());
+
+    // Insert values into the database and close it
+    db.insert(TABLE_COOKIES, null, values);
+    db.close();
   }
 
   /**
@@ -211,14 +244,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
   private Cookie getCookie(int id) {
     // This does all the work of recreating a cookie from the strings in the
     // Cookie table.
-  }
-
-  /**
-   * Adds the ID of the cookie to the User table
-   */
-  private void addCookieId(int id, User user) {
-    // Check what type of cookie we have (name or session code) - could be
-    // passed as a parameter if we are lazy?
   }
 
 }
