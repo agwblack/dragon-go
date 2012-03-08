@@ -7,6 +7,9 @@ import android.content.Context;
 import android.content.ContentValues;
 import android.util.Log;
 
+import  org.apache.http.cookie.Cookie;
+import  org.apache.http.impl.cookie.BasicClientCookie;
+
 import java.util.List;
 import java.util.ArrayList;
 
@@ -15,6 +18,9 @@ import java.util.ArrayList;
  *
  * We are required to create this class in order to access the SQLite database.
  **/
+
+// TODO: Tidy this class up and comment properly
+//       Add cookie table and add cookie ids to user table
 
 public class DatabaseHandler extends SQLiteOpenHelper {
 
@@ -31,8 +37,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
   // (and needs an appropriate implementation). This implementation uses 
   // cookies as semi-colon separated strings which we extract with a suitable 
   // utility method
-  private static final String COLUMN_FIRST_COOKIE = "cookie1";
-  private static final String COLUMN_SECOND_COOKIE = "cookie2";
+  private static final String COLUMN_COOKIE1_ID = "cookie1";
+  private static final String COLUMN_COOKIE2_ID = "cookie2";
 
   // Likewise, we may wish to have games as a separate table, or alternatively
   // just represented by a semi-colon separated string in the user table
@@ -144,6 +150,75 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     db.delete(TABLE_USERS, COLUMN_ID + "=?", 
         new String[] { String.valueOf(user.getID()) });
     db.close();
+  }
+
+  /** 
+   * Adds the handle cookie.
+   *
+   * We add the cookie to the Cookie table and add its id to the User table
+   */
+  public void addHandleCookie(User user, Cookie cookie) {
+    // Add Cookie to Cookie table
+    // Add Cookie ID to User table
+  }
+
+  /** 
+   * Adds the handle cookie.
+   *
+   * We add the cookie to the Cookie table and add its id to the User table
+   */
+  public void addSessionCodeCookie(User user, Cookie cookie) {
+    // Add Cookie to Cookie table - Add cookie
+    // Add Cookie ID to User table
+  }
+
+  /**
+   * Returns the handle cookie associated with the user
+   * 
+   * Returns null if we couldn't access the cookie
+   */
+  public Cookie getHandleCookie(User user) {
+    // Identify the correct ID to access the Cookie table, then call
+    // getCookie(ID)
+  }
+
+  /**
+   * Returns the session code cookie associated with the user
+   * 
+   * Returns null if we couldn't access the cookie
+   */
+  public Cookie getSessionCodeCookie(User user) {
+    // Identify the correct ID to access the Cookie table, then call
+    // getCookie(ID)
+  }
+
+  /**
+   * Adds cookie to the cookie table
+   *
+   * Returns the cookie's ID so it can be linked to the user
+   * Returns -1 if we couldn't add the cookie.
+   */
+  private int addCookie(Cookie cookie) {
+    // Contains all the work to extract the cookie strings from the cookie and
+    // place them into the table
+  }
+
+  /**
+   * Retrieves a cookie from the Cookie table
+   *
+   * Returns null if cookie id can't be found
+   */
+  private Cookie getCookie(int id) {
+    // This does all the work of recreating a cookie from the strings in the
+    // Cookie table.
+  }
+
+  /**
+   * Adds the ID of the cookie to the User table
+   */
+  private void addCookieId(int id, User user) {
+    // Check what type of cookie we have (name or session code) - could be
+    // passed as a parameter if we are lazy?
   }
 
 }

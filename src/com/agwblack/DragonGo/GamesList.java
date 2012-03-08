@@ -37,6 +37,9 @@ public class GamesList extends ListActivity {
       ListView lv = getListView();
       lv.setTextFilterEnabled(true);
 
+      /** These are placeholders and should be removed 
+        * We populate the list either from the database or from status requests
+        */
       games.add("game1");
       games.add("game2");
       games.add("game3");
@@ -54,7 +57,6 @@ public class GamesList extends ListActivity {
 
 
       update();
-      //arrayAdapter.add(getIntent().getExtras().getString("userName"));
       /** Temp method to test database  -  remove */
       readDatabase();
     }
@@ -63,14 +65,9 @@ public class GamesList extends ListActivity {
   void update() {
     /** example */
     arrayAdapter.add(getIntent().getExtras().getString("userName"));
-    // get user session cookie from database
+    // get user session cookie from database - db.getSessionCodeCookie and
+    // db.getHandleCookie
     // update games array using QUICK_STATUS message
-
-    /** Testing database - Delete this! */
-    Log.d(TAG, "Inserting into Database");
-    db.addUser(new User("andy", "passw"));
-    db.addUser(new User("dave", "saxophone"));
-    db.addUser(new User("sammy", "blimmin7687"));
 
   }
 

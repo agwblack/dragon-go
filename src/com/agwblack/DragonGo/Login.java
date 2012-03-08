@@ -16,18 +16,21 @@ public class Login extends Activity
     /** tag for logging purpose */
     private static final String TAG = "DragonGo Login";
 
-    private TextView user;
+    private TextView usern;
     // FIXME: obfuscate password in TextView
     private TextView passwd;
+    private DatabaseHandler db;
+    private User user;
 
 
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
+        db = new DatabaseHandler(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
-        user = (TextView) findViewById(R.id.username);
+        usern = (TextView) findViewById(R.id.username);
         passwd = (TextView) findViewById(R.id.password);
     }
 
@@ -45,22 +48,29 @@ public class Login extends Activity
           Log.e(TAG, msg.getResponse());
           error = DGSEnumType.Error.BAD_LOGIN_DETAILS;
         } else {
-          // We have a valid user!
-          // Create/Access/Update user information in database so we can
-          // activate it once we pass the username through to the
-          // GamesList Activity. In particular we must add username, password
-          // and session cookie
-          /** Temporary: Attempt to grab the cookie,deconstruct it, reconstruct
-           * it and perform a getStatus request - Eventually this will have the
-           * database as an intermediate step in this, so we can access the
-           * data from anywhere */
+          // We have a valid user. Add them and their details to the database
+          user = new User(username, password);
+          db.addUser(user);
+
           // Get cookies from message
           Cookie[] cookies = msg.getCookies();
+
+          // Add cookies to database (DGS logins currently require 2 cookies)
+          db.addHandleCookie(user, cookies[0]);
+          db.addSessionCodeCookie(user, cookies[1]);
 
           // display cookies in log
           for (int i = 0; i != cookies.length; ++i) {
             System.out.println(cookies[i].toString());
           }
+
+          /** Move all of the following into DatabaseHandler or GamesList as
+           * appropriate.
+
+           * Temporary: Attempt to grab the cookie,deconstruct it, reconstruct
+           * it and perform a getStatus request - Eventually this will have the
+           * database as an intermediate step in this, so we can access the
+           * data from anywhere 
 
           // Create new cookies from the information we got from those we just
           // downloaded
@@ -86,10 +96,8 @@ public class Login extends Activity
           statMsg.setCookies(cookie2);
           statMsg.send();
           System.out.println(statMsg.getResponse());
+          */
 
-          /** The above works! Now implement database so we can do the 
-           *  buildCookie/getStatus in the GamesList activity
-           */
         }
       } else {
         // We could not find the server
@@ -104,15 +112,17 @@ public class Login extends Activity
       // password entries as they cause an exception to be thrown. We shouldn't
       // catch this as a BAD_LOGIN_DETAILS error since users will not necessarily 
       // notice the problem.
-      error = login(user.getText().toString(), passwd.getText().toString());
+      error = login(usern.getText().toString(), passwd.getText().toString());
       if (error == DGSEnumType.Error.NONE) {
         // Login OK - Load the next activity
         Intent intent = new Intent(Login.this, GamesList.class);
         // We pass the username in to the next activity so we can access the
         // login cookie from the database once we are in the next activity
-        intent.putExtra("userName", user.getText().toString());
+        // FIXME: Change this so we pass the user ID rather than the username
+        intent.putExtra("userName", usern.getText().toString());
         startActivity(intent);
       } 
+      // FIXME: These toasts are too small and don't persist long enough
       else if (error == DGSEnumType.Error.BAD_LOGIN_DETAILS) {
         Toast failed = Toast.makeText(getApplicationContext(), "Bad username or password",
           Toast.LENGTH_SHORT);
