@@ -1,9 +1,7 @@
-##############################################################################
 Dragon Go
+=========
 
 An Android client for the Dragon Go Server (http://www.dragongoserver.net)
-
-##############################################################################
 
 This is currently in a pre-alpha state. Expect Nothing. Seriously, there isn't
 even an SGF viewer yet.
