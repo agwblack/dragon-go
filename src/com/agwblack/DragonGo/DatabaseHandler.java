@@ -34,8 +34,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
   private static final String COLUMN_USERNAME = "username";
   private static final String COLUMN_PASSWORD = "password";
   // Use SQL joins to access cookie table using these ids
-  private static final String COLUMN_HANDLE_COOKIE = "handle_cookie";
-  private static final String COLUMN_SESSION_COOKIE = "session_cookie";
+  private static final String COLUMN_HANDLE_COOKIE_ID = "handle_cookie";
+  private static final String COLUMN_SESSION_COOKIE_ID = "session_cookie";
   // Consider having a separate table for games, but either way we need a comma
   // separated String of game IDs in the users table
   private static final String COLUMN_ACTIVE_GAMES = "active_games";
@@ -44,7 +44,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
   private static final String USER_TABLE_CREATE = "create table " + TABLE_USERS +
     "( " + COLUMN_ID + " integer primary key autoincrement, " + COLUMN_USERNAME
     + " text not null, " + COLUMN_PASSWORD + " text not null, " + 
-    COLUMN_HANDLE_COOKIE + " interger, " + COLUMN_SESSION_COOKIE +  " integer);";
+    COLUMN_HANDLE_COOKIE_ID + " interger, " + COLUMN_SESSION_COOKIE_ID +  " integer);";
 
   // Constants for creating Cookies table
   private static final String TABLE_COOKIES = "cookies";
@@ -89,13 +89,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
   // Clearly we will need to reevaluate some of these methods, currently this
   // is just following:
   // http://www.androidhive.info/2011/11/android-sqlite-database-tutorial/
+  //
+  // TODO: update these initial methods (especially the first two) so that they
+  // account for cookies properly, e.g. if adding a user with cookies, add the
+  // cookies. if retrieving a user with cookies, retrieve the cookies
   public void addUser(User user) {
     // open the database for writing
     SQLiteDatabase db = this.getWritableDatabase();
 
     // Set up the values we wish to add
     ContentValues values = new ContentValues();
-    values.put(COLUMN_USERNAME, user.getUsername());
+    values.put(COLUMN_USERNAME, user._IDgetUsername());
     values.put(COLUMN_PASSWORD, user.getPassword());
 
     // Insert values into the database and close it
@@ -178,28 +182,58 @@ public class DatabaseHandler extends SQLiteOpenHelper {
   public void addHandleCookie(User user, Cookie cookie) {
     // Add Cookie to Cookie table
     int id = addCookie(cookie);
-    // Add Cookie ID to User table
+    if (id != -1) {
+      // Add Cookie ID to User table
+      SQLiteDatabase db = this.getWritableDatabase();
+      ContentValues values = new ContentValues();
+      values.put(COLUMN_SESSION_COOKIE_ID, id);
+
+      db.update(TABLE_USERS, values, COLUMN_ID + "=?",
+        new String[] { String.valueOf(user.getID()) });
+    }
   }
 
   /** 
-   * Adds the handle cookie.
+   * Adds the handle cookie to the Cookie table.
    *
    * We add the cookie to the Cookie table and add its id to the User table
    */
   public void addSessionCodeCookie(User user, Cookie cookie) {
-    // Add Cookie to Cookie table - Add cookie
+    // Add Cookie to Cookie table
     int id = addCookie(cookie);
-    // Add Cookie ID to User table
+    if (id != -1) {
+      // Add Cookie ID to User table
+      SQLiteDatabase db = this.getWritableDatabase();
+      ContentValues values = new ContentValues();
+      values.put(COLUMN_HANDLE_COOKIE_ID, id);
+
+      db.update(TABLE_USERS, values, COLUMN_ID + "=?",
+        new String[] { String.valueOf(user.getID()) });
+    }
   }
 
+  // TODO:These methods should be private, accessed only when we get a 
+  // User from the table. We only return users, and users have
+  // cookies.
   /**
    * Returns the handle cookie associated with the user
    * 
    * Returns null if we couldn't access the cookie
    */
   public Cookie getHandleCookie(User user) {
-    // Get handle cookie id from user table
-    // return getCookie(id)
+    SQLiteDatabase db = this.getReadableDatabase();
+
+    Cursor cursor = db.query(TABLE_USERS, 
+        new String[] { COLUMN_HANDLE_COOKIE_ID },
+        COLUMN_USERNAME + "=?",
+        new String[] { user.getUsername() }, null, null, null, null);
+
+    if (cursor != null) {
+      cursor.moveToFirst();
+      int id = cursor.getInt(0);
+      return getCookie(id);
+    }
+    return null;
   }
 
   /**
@@ -208,8 +242,19 @@ public class DatabaseHandler extends SQLiteOpenHelper {
    * Returns null if we couldn't access the cookie
    */
   public Cookie getSessionCodeCookie(User user) {
-    // Get session cookie id from user table
-    // return getCookie(id)
+    SQLiteDatabase db = this.getReadableDatabase();
+
+    Cursor cursor = db.query(TABLE_USERS, 
+        new String[] { COLUMN_SESSION_COOKIE_ID },
+        COLUMN_USERNAME + "=?",
+        new String[] { user.getUsername() }, null, null, null, null);
+
+    if (cursor != null) {
+      cursor.moveToFirst();
+      int id = cursor.getInt(0);
+      return getCookie(id);
+    }
+    return null;
   }
 
   /**
@@ -233,7 +278,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     // Insert values into the database and close it
     db.insert(TABLE_COOKIES, null, values);
+
+    Cursor cursor = db.query(TABLE_COOKIES, 
+        new String[] { COLUMN_COOKIE_ID }, 
+        COLUMN_COOKIE_NAME + "=?",
+        new String[] { cookie.getName() }, null, null, null, null);
     db.close();
+
+    if (cursor != null) {
+      cursor.moveToFirst();
+      return cursor.getString(0);
+    }
+    return -1;
   }
 
   /**
@@ -244,6 +300,28 @@ public class DatabaseHandler extends SQLiteOpenHelper {
   private Cookie getCookie(int id) {
     // This does all the work of recreating a cookie from the strings in the
     // Cookie table.
+    Cursor cursor = db.query(TABLE_COOKIES, 
+        new String[] { COLUMN_COOKIE_NAME, COLUMN_COOKIE_VALUE, 
+          COLUMN_COOKIE_VERSION, COLUMN_COOKIE_PATH, COLUMN_COOKIE_DOMAIN, 
+           COLUMN_COOKIE_EXPIRY_DATE }, 
+        COLUMN_ID + "=?",
+        new String[] {String.valueOf(id)}, null, null, null, null);
+
+    if (cursor != null) {
+      cursor.moveToFirst();
+      BasicClientCookie cookie = new BasicClientCookie(cursor.getString(0), cursor.getString(1));
+      cookie.setVersion(cursor.getString(2));
+      cookie.setPath(cursor.getString(3));
+      cookie.setDomain(cursor.getString(4));
+      // might need to play around with the following to get it to work properly
+      DateFormat df = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss z");
+      df.setTimeZone(TimeZone.getTimeZone("GMT"));
+      Date d = df.parse(cursor.getString(5));
+      cookie.setExpiryDate(d);
+
+      return cookie;
+    }
+    return null;
   }
 
 }

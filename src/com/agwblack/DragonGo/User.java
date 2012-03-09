@@ -13,9 +13,12 @@ public class User {
   int _id;
   String _username;
   String _password;
-  String _first_cookie;
-  String _second_cookie;
+  Cookie _handle_cookie;
+  Cookie _session_cookie;
   String _games;
+  // Do we really need these 2? or can they just exist in the database?
+  int _handle_cookie_id;
+  int _session_cookie_id;
 
   public User() {
   }
@@ -53,6 +56,22 @@ public class User {
 
   public void setPassword(String password) {
     this._password = password;
+  }
+
+  public void setHandleCookie(Cookie cookie) {
+    this._handle_cookie = cookie;
+  }
+
+  public Cookie getHandleCookie() {
+    return _handle_cookie;
+  }
+
+  public void setSessionCookie(Cookie cookie) {
+    this._session_cookie = cookie;
+  }
+
+  public Cookie getSessionCookie() {
+    return _session_cookie;
   }
 
   // TODO: add rest of getter and setter methods
