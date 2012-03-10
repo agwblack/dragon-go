@@ -12,6 +12,11 @@ import  org.apache.http.impl.cookie.BasicClientCookie;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.TimeZone;
+import java.util.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.lang.Exception;
 
 /**
  * Database Handler class.
@@ -61,7 +66,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     TABLE_COOKIES + "( " + COLUMN_COOKIE_ID + 
     " integer primary key autoincrement " + COLUMN_COOKIE_NAME + 
     " text not null, " + COLUMN_COOKIE_VALUE + " text not null, " +
-    COOKIE_COLUMN_VERSION + " text not null, " + COLUMN_COOKIE_DOMAIN +
+    COLUMN_COOKIE_VERSION + " text not null, " + COLUMN_COOKIE_DOMAIN +
     " text not null, " + COLUMN_COOKIE_PATH + " text not null, " + 
     COLUMN_COOKIE_EXPIRY_DATE + " text not null);";
 
@@ -99,7 +104,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     // Set up the values we wish to add
     ContentValues values = new ContentValues();
-    values.put(COLUMN_USERNAME, user._IDgetUsername());
+    values.put(COLUMN_USERNAME, user.getUsername());
     values.put(COLUMN_PASSWORD, user.getPassword());
 
     // Insert values into the database and close it
@@ -274,7 +279,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     values.put(COLUMN_COOKIE_VERSION, cookie.getVersion());
     values.put(COLUMN_COOKIE_PATH, cookie.getPath());
     values.put(COLUMN_COOKIE_DOMAIN, cookie.getDomain());
-    values.put(COLUMN_COOKIE_EXPIRY_DATE, cookie.getExpiryDate());
+    values.put(COLUMN_COOKIE_EXPIRY_DATE, cookie.getExpiryDate().toString());
 
     // Insert values into the database and close it
     db.insert(TABLE_COOKIES, null, values);
@@ -287,7 +292,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     if (cursor != null) {
       cursor.moveToFirst();
-      return cursor.getString(0);
+      return cursor.getInt(0);
     }
     return -1;
   }
@@ -300,6 +305,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
   private Cookie getCookie(int id) {
     // This does all the work of recreating a cookie from the strings in the
     // Cookie table.
+    SQLiteDatabase db = this.getReadableDatabase();
     Cursor cursor = db.query(TABLE_COOKIES, 
         new String[] { COLUMN_COOKIE_NAME, COLUMN_COOKIE_VALUE, 
           COLUMN_COOKIE_VERSION, COLUMN_COOKIE_PATH, COLUMN_COOKIE_DOMAIN, 
@@ -310,13 +316,19 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     if (cursor != null) {
       cursor.moveToFirst();
       BasicClientCookie cookie = new BasicClientCookie(cursor.getString(0), cursor.getString(1));
-      cookie.setVersion(cursor.getString(2));
+      cookie.setVersion(cursor.getInt(2));
       cookie.setPath(cursor.getString(3));
       cookie.setDomain(cursor.getString(4));
       // might need to play around with the following to get it to work properly
       DateFormat df = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss z");
       df.setTimeZone(TimeZone.getTimeZone("GMT"));
-      Date d = df.parse(cursor.getString(5));
+      Date d;
+      try {
+        d = df.parse(cursor.getString(5));
+      } catch (Exception e) {
+        e.printStackTrace();
+        return null;
+      }
       cookie.setExpiryDate(d);
 
       return cookie;

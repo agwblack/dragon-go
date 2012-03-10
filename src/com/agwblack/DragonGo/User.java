@@ -1,5 +1,7 @@
 package com.agwblack.DragonGo;
 
+import org.apache.http.cookie.Cookie;
+
 /** This class represents a user.
   * 
   * Each instance represents a user and his attributes (name, password,
