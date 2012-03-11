@@ -51,6 +51,7 @@ public class Login extends Activity
           // We have a valid user. Add them and their details to the database
           user = new User(username, password);
           db.addUser(user);
+          System.out.println("User has initial id: " + user.getID());
 
           // Get cookies from message
           Cookie[] cookies = msg.getCookies();
@@ -61,43 +62,8 @@ public class Login extends Activity
 
           // display cookies in log
           for (int i = 0; i != cookies.length; ++i) {
-            System.out.println(cookies[i].toString());
+            Log.i(TAG, cookies[i].toString());
           }
-
-          /** Move all of the following into DatabaseHandler or GamesList as
-           * appropriate.
-
-           * Temporary: Attempt to grab the cookie,deconstruct it, reconstruct
-           * it and perform a getStatus request - Eventually this will have the
-           * database as an intermediate step in this, so we can access the
-           * data from anywhere 
-
-          // Create new cookies from the information we got from those we just
-          // downloaded
-          BasicClientCookie cookie = new BasicClientCookie(cookies[0].getName(), cookies[0].getValue());
-          cookie.setVersion(cookies[0].getVersion());
-          cookie.setDomain(cookies[0].getDomain());
-          cookie.setPath(cookies[0].getPath());
-          cookie.setExpiryDate(cookies[0].getExpiryDate());
-          System.out.println(cookie.toString());
-
-          BasicClientCookie cookie2 = new BasicClientCookie(cookies[1].getName(), cookies[1].getValue());
-          cookie2.setVersion(cookies[1].getVersion());
-          cookie2.setDomain(cookies[1].getDomain());
-          cookie2.setPath(cookies[1].getPath());
-          cookie2.setExpiryDate(cookies[1].getExpiryDate());
-          System.out.println(cookie2.toString());
-
-          // Use our new cookies to get status without specifying the user
-          // (since that information is contained within the cookies)
-          String[] args2 = new String[0];
-          Message statMsg = new Message(DGSEnumType.Command.QUICK_STATUS, args);
-          statMsg.setCookies(cookie);
-          statMsg.setCookies(cookie2);
-          statMsg.send();
-          System.out.println(statMsg.getResponse());
-          */
-
         }
       } else {
         // We could not find the server
@@ -113,21 +79,22 @@ public class Login extends Activity
       // catch this as a BAD_LOGIN_DETAILS error since users will not necessarily 
       // notice the problem.
       error = login(usern.getText().toString(), passwd.getText().toString());
+
       if (error == DGSEnumType.Error.NONE) {
         // Login OK - Load the next activity
         Intent intent = new Intent(Login.this, GamesList.class);
-        // We pass the username in to the next activity so we can access the
-        // login cookie from the database once we are in the next activity
-        // FIXME: Change this so we pass the user ID rather than the username
-        intent.putExtra("userName", usern.getText().toString());
+        // Pass the database ID of the logged in user to the next activity
+        intent.putExtra("userId", user.getID());
         startActivity(intent);
       } 
+
       // FIXME: These toasts are too small and don't persist long enough
       else if (error == DGSEnumType.Error.BAD_LOGIN_DETAILS) {
         Toast failed = Toast.makeText(getApplicationContext(), "Bad username or password",
           Toast.LENGTH_SHORT);
         failed.show();
       }
+
       else if (error == DGSEnumType.Error.CANNOT_FIND_SERVER) {
         Toast failed = Toast.makeText(getApplicationContext(), 
             "Cannot find server - are you connected to the Internet?",

@@ -8,7 +8,6 @@ import org.apache.http.cookie.Cookie;
   * cookies, running games, rank, etc)
   **/
 
-// Eventually this class should be User.java
 
 public class User {
   
@@ -18,9 +17,6 @@ public class User {
   Cookie _handle_cookie;
   Cookie _session_cookie;
   String _games;
-  // Do we really need these 2? or can they just exist in the database?
-  int _handle_cookie_id;
-  int _session_cookie_id;
 
   public User() {
   }
@@ -28,6 +24,7 @@ public class User {
   public User(String username, String password) {
     this._username = username;
     this._password = password;
+    System.out.println("User created");
   }
 
   public User(int id, String username, String password) {
@@ -65,7 +62,7 @@ public class User {
   }
 
   public Cookie getHandleCookie() {
-    return _handle_cookie;
+    return this._handle_cookie;
   }
 
   public void setSessionCookie(Cookie cookie) {
@@ -73,11 +70,10 @@ public class User {
   }
 
   public Cookie getSessionCookie() {
-    return _session_cookie;
+    return this._session_cookie;
   }
 
   // TODO: add rest of getter and setter methods
-  // TODO: It may be that we want to add our utility classes here (i.e. those
-  // that extract Cookies from the cookie strings, gameslists from the games
-  // strings, etc)
+  // TODO: It may be that we want to add our utility classes here (e.g. those
+  // that extract gameslists from the games strings, etc)
 }

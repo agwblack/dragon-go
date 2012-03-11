@@ -17,6 +17,7 @@ import java.util.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.lang.Exception;
+import java.lang.Integer;
 
 /**
  * Database Handler class.
@@ -25,7 +26,8 @@ import java.lang.Exception;
  **/
 
 // TODO: Tidy this class up and comment properly
-//       Add cookie table and add cookie ids to user table
+// FIXME: Combined with the DatabaseHandler class. We need to optimise so we
+// make as few calls as possible to the database. These calls are expensive.
 
 public class DatabaseHandler extends SQLiteOpenHelper {
 
@@ -64,7 +66,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
   // Cookie table creation statement
   private static final String COOKIE_TABLE_CREATE = "create table " + 
     TABLE_COOKIES + "( " + COLUMN_COOKIE_ID + 
-    " integer primary key autoincrement " + COLUMN_COOKIE_NAME + 
+    " integer primary key autoincrement, " + COLUMN_COOKIE_NAME + 
     " text not null, " + COLUMN_COOKIE_VALUE + " text not null, " +
     COLUMN_COOKIE_VERSION + " text not null, " + COLUMN_COOKIE_DOMAIN +
     " text not null, " + COLUMN_COOKIE_PATH + " text not null, " + 
@@ -109,25 +111,64 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     // Insert values into the database and close it
     db.insert(TABLE_USERS, null, values);
+
+    // Add users newly created id to the user
+    addUserId(user);
+
+    System.out.println("Added user: " + user.getUsername() + "password: "
+        + user.getPassword() + "id: " + user.getID());
     db.close();
+  }
+
+  /**
+   * Method to add a user's database id to the corresponding User instance
+   *
+   * Not sure if should be private or public 
+   */
+  private void addUserId(User user) {
+    // Get id from database using username
+    SQLiteDatabase db = this.getReadableDatabase();
+
+    Cursor cursor = db.query(TABLE_USERS, 
+        new String[] { COLUMN_ID, COLUMN_USERNAME, COLUMN_PASSWORD },
+        COLUMN_USERNAME + "=?",
+        new String[] { user.getUsername() }, null, null, null, null);
+
+    // FIXME: Proper error checking please
+    if (cursor != null)
+      cursor.moveToFirst();
+
+    System.out.println("User: " + cursor.getString(1) + "passwd: " 
+        + cursor.getString(2));
+    // add id to user
+    user.setID(Integer.parseInt(cursor.getString(0)));
   }
 
   public User getUser(int id) {
     // FIXME: Might we have problems if cursor is null? Need exception handling
     SQLiteDatabase db = this.getReadableDatabase();
 
+    System.out.println("Attempting to get user with id: " + id);
     Cursor cursor = db.query(TABLE_USERS, 
-        new String[] { COLUMN_ID, COLUMN_USERNAME, COLUMN_PASSWORD }, 
+        new String[] { COLUMN_ID, COLUMN_USERNAME, COLUMN_PASSWORD/*,
+          COLUMN_HANDLE_COOKIE_ID, COLUMN_SESSION_COOKIE_ID*/}, 
         COLUMN_ID + "=?",
         new String[] {String.valueOf(id)}, null, null, null, null);
 
-    if (cursor != null)
-      cursor.moveToFirst();
+    if (cursor != null && cursor.moveToFirst() != false) {
 
-    User user = new User(Integer.parseInt(cursor.getString(0)), 
-        cursor.getString(1), cursor.getString(2));
+      // Create user
+      User user = new User(/*Integer.parseInt(cursor.getString(0)), */
+          cursor.getString(1), cursor.getString(2));
 
-    return user;
+      // Add cookies to user from database
+      user.setHandleCookie(this.getHandleCookie(user));
+      user.setSessionCookie(this.getSessionCookie(user));
+      return user;
+    } else {
+      System.out.println("Couldn't get cursor");
+      return null;
+    }
   }
 
   public List<User> getAllUsers() {
@@ -195,6 +236,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
       db.update(TABLE_USERS, values, COLUMN_ID + "=?",
         new String[] { String.valueOf(user.getID()) });
+      db.close();
     }
   }
 
@@ -214,6 +256,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
       db.update(TABLE_USERS, values, COLUMN_ID + "=?",
         new String[] { String.valueOf(user.getID()) });
+      db.close();
     }
   }
 
@@ -246,7 +289,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
    * 
    * Returns null if we couldn't access the cookie
    */
-  public Cookie getSessionCodeCookie(User user) {
+  public Cookie getSessionCookie(User user) {
     SQLiteDatabase db = this.getReadableDatabase();
 
     Cursor cursor = db.query(TABLE_USERS, 
@@ -288,7 +331,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         new String[] { COLUMN_COOKIE_ID }, 
         COLUMN_COOKIE_NAME + "=?",
         new String[] { cookie.getName() }, null, null, null, null);
-    db.close();
 
     if (cursor != null) {
       cursor.moveToFirst();
@@ -310,7 +352,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         new String[] { COLUMN_COOKIE_NAME, COLUMN_COOKIE_VALUE, 
           COLUMN_COOKIE_VERSION, COLUMN_COOKIE_PATH, COLUMN_COOKIE_DOMAIN, 
            COLUMN_COOKIE_EXPIRY_DATE }, 
-        COLUMN_ID + "=?",
+        COLUMN_COOKIE_ID + "=?",
         new String[] {String.valueOf(id)}, null, null, null, null);
 
     if (cursor != null) {
@@ -320,7 +362,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
       cookie.setPath(cursor.getString(3));
       cookie.setDomain(cursor.getString(4));
       // might need to play around with the following to get it to work properly
-      DateFormat df = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss z");
+      DateFormat df = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
       df.setTimeZone(TimeZone.getTimeZone("GMT"));
       Date d;
       try {
