@@ -18,17 +18,24 @@ import java.io.IOException;
 public class Game {
   String dgsID;
   Opponent opponent;
-  Date timeOfLastMove;
+  // Should this be a Date or a String?
+  String timeOfLastMove;
   String timeSystem;
   String timeRemaining;
   String userColour;
   int handicap;
   int komi;
   int moveNumber;
+  // Not precisely sure what this should do yet
+  Sgf sgf;
 
   /** Constructor */
   public Game(String status) {
-    parseStatus();
+    parseStatus(status);
+    System.out.println("Created new game.\nID: " + dgsID + "\nOpponent: "
+        + opponent.getID() + "\nColour: " + userColour + 
+        "\nTime of Last Move: " + timeOfLastMove + "\nTime Remaining: " 
+        + timeRemaining);
   }
 
   /** Takes the status line returned from the server and breaks it up into its
@@ -36,7 +43,7 @@ public class Game {
   private void parseStatus(String status) {
     String[] s = status.split(", ");
     dgsID = new String(s[1]);
-    Opponent = new Opponent(s[2]);
+    opponent = new Opponent(s[2]);
     userColour = new String(s[3]);
     timeOfLastMove = new String(s[4]);
     timeRemaining = new String(s[5]);
@@ -65,7 +72,8 @@ public class Game {
 
   /*Accessor methods*/
   int getLastMoveNumber() {
-    return moves.length;
+    //return moves.length;
+    return 0;
   }
 
   Opponent getOpponent() {

@@ -6,14 +6,20 @@ package com.agwblack.DragonGo;
  * get about the opponent.
  */
 public class Opponent {
-  String name;
-  String id;
-  String rank;
+  String _name;
+  String _id;
+  String _rank;
 
   /*Constructor*/
+  public Opponent(String id) {
+    this._id = id;
+  }
 
+  public String getID() {
+    return this._id;
+  }
 
   String getName() {
-    return name;
+    return this._name;
   }
 }
