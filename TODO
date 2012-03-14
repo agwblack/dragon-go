@@ -1,35 +1,14 @@
 # TODO list
 # #########
 #
-# Get from login in screen to fully populated GamesListPager.
-#   Successfully login and create User (to pass to the GamesList activity)
-#     Requires session cookie issues to be resolved
-#       (link for cookie management:
-#       http://hc.apache.org/httpcomponents-client-ga/tutorial/html/statemgmt.html)
-#       We should do this with a sqlite database which stores cookies and other
-#       userdata. Firefox stores cookies in such a database. It seems we have 2
-#       cookies to take care of for each user. One question is where we should
-#       insert/extract the cookies into the database - probably in the Message
-#       class since this allows us to act dependent on the type of message
-#       being sent.
-#         Database structure: (may need to rethink this)
-#           Users
-#             Cookies
-#               UserCookie
-#               SessionCookie
-#             GameLists
-#               Games
-#       Checkout this tutorial for more on SQLite databases in Android:
-#       http://www.vogella.de/articles/AndroidSQLite/article.html
-#       Remember, we create/update user and cookie data in the Login Activity,
-#       then retrieve that data in the GamesList Activity (Passing the username
-#       around as a "key" to the database).
+#   Fix remaining issues with Login and GamesList activities
 #               
 #   Design layout (based on ABS)
 #   Figure out how to store data and populate Lists
 #     Probably a ContentProvider and SQL database.
 #       Look up User in the database and get his GamesList. Then compare with
 #       what the server says and update accordingly.
+#
 #   GamesListPager should be the opening Activity. It immediately checks for logged
 #   in User and if it can't find one it goes to Login Activity. We thus need a
 #   way for the app to remember who is logged in, option to automatically
@@ -43,11 +22,11 @@
 #   Another service which runs indefinitely (until the app is killed?) and
 #   calls the first service periodically.
 #
-# Add action bar for navigation, etc. (Use ActionBarSherlock)
-#   Implement Refresh button.
-#
 # Create a BoardView 
 #   probably using a GridLayout/GridView - what is the difference?
+#   Alternatively a board image on top of which we place stone images as
+#   appropriate.
+#   Would be really cool to have a pinch view board that you can scroll around
 #   Need to create some basic artwork for this
 #   Should copy GoDroid in having the 2 moves prior to the most recent move
 #   numbered.
@@ -58,54 +37,4 @@
 #   Comments
 #   NavigationBar
 #
-# Look at theming (must be consistent with ABS)
-#
 # ############################################################
-#
-# OUTDATED:
-# #########
-# Implement all common commands
-#   DownloadGame
-#   Login
-#   Status
-#   QuickStatus
-#   QuickPlay
-# Need to get cookies working as part of this
-#
-# Parse output from commands and handle it in a meaningful way
-#
-# Think about exceptions - especially in the message class and the classes
-# it owns.
-#
-# Create a User class and prompt user for login details
-#
-# Abstract away from messages so main just looks like:
-#   login();
-#   listAllGames();
-#   checkForMoves();
-#   displayGame();
-# or something like that.
-#
-# Create classes for GamesList, Game, User - see notepad.
-#
-# Allow user to login, check status and set an option for 
-# periodic status check with notifcations
-#
-# Get to work on UI (so we can view games and make moves).
-# See notepad for more. Android Developer Design site is a gold mine.
-#
-# Create a board class. This is a visual element, distinct from a game
-# (although its appearance will be driven by a game). Perhaps each game owns a
-# board?
-#
-# Create artwork - board, stones, icons (see Android Design site for a full
-# list of things we need to draw).
-#
-# Look at creating a widget
-#
-# Look to implement other features not present in anDGS, e.g.
-#   Viewing all available games
-#   Joining games
-#   Creating games
-#   Scoring at the end
-#   etc.

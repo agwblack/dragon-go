@@ -23,7 +23,7 @@ public class Message {
    * \param command - specifies the type of message we wish to send
    * \param args - gives additional arguments to the message
    */
-  Message(DGSEnumType.Command command, String[] args) {
+  Message(DGSEnumType.Command command, String... args) {
     switch (command) {
       case QUICK_STATUS:
         address += "quick_status.php";
@@ -55,6 +55,8 @@ public class Message {
    * Sends the message to the server
    */
   public DGSEnumType.Error send() {
+    // FIXME: Network operations need to run in their own thread - do it here
+    // or at a lower level (eg. apacheHttpClient level)
     DGSEnumType.Error error = DGSEnumType.Error.NONE;
     System.out.println("Sending http request to " + address);
     error = client.sendMessage(address);
